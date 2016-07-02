@@ -1,0 +1,24 @@
+{
+    "name": "metemq-broker",
+    "version": "0.0.0",
+    "description": "",
+    "main": "dist/index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git@gitlab.com:metemq/metemq-broker.git"
+    },
+    "author": "",
+    "license": "MIT",
+    "dependencies": {
+        "mosca": "^2.0.1"
+    },
+    "devDependencies": {
+        "gulp-nodemon": "^2.1.0",
+        "typescript": "^1.8.10",
+        "gulp": "^3.9.1",
+        "gulp-typescript": "^2.13.6"
+    }
+}

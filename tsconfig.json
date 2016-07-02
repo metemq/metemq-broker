@@ -1,0 +1,31 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "es5",
+        "noImplicitAny": false,
+        "sourceMap": false,
+        "outDir": "./dist",
+        "rootDir": "./src",
+        "moduleResolution": "node"
+    },
+    "exclude": [
+        "node_modules"
+    ],
+    "filesGlob": [
+        "src/**/*.ts",
+        "typings/index.d.ts"
+    ],
+    "compileOnSave": false,
+    "files": [
+        "src/auth.ts",
+        "src/auth/pubAuth.ts",
+        "src/auth/subAuth.ts",
+        "src/auth/userAuth.ts",
+        "src/config.ts",
+        "src/index.ts",
+        "typings/index.d.ts"
+    ],
+    "atom": {
+        "rewriteTsconfig": true
+    }
+}
