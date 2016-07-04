@@ -30,7 +30,11 @@ server.on('published', function(packet, client) {
     let topic = packet.topic;
     let payload = packet.payload.toString();
 
+    // Ignore topic starts with '$'
     if (topic[0] === '$') return;
+
+    // When server publishes a message, client object is undefined.
+    if (client === undefined) return;
 
     let clientId = client.id;
 
@@ -44,6 +48,8 @@ function setup() {
     server.authenticate = authenticate;
     server.authorizePublish = authorizePublish;
     server.authorizeSubscribe = authorizeSubscribe;
-    
+
     console.log('*** MeteMQ Broker is up and running ***');
 }
+
+export { server };
