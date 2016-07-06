@@ -1,4 +1,4 @@
-import mosca = require('mosca');
+import { Broker } from './broker';
 
 import {
     authorizePublish,
@@ -19,7 +19,7 @@ var settings = {
     backend: ascoltatore
 };
 
-var server = new mosca.Server(settings);
+var server = Broker.getInstance(settings);
 
 server.on('clientConnected', function(client) {
     console.log('client connected', client.id);
@@ -31,12 +31,14 @@ server.on('published', function(packet, client) {
     let payload = packet.payload.toString();
 
     // Ignore topic starts with '$'
-    if (topic[0] === '$') return;
+    // if (topic[0] === '$') return;
 
     // When server publishes a message, client object is undefined.
     if (client === undefined) return;
 
     let clientId = client.id;
+
+
 
     console.log(`${clientId}->${topic}: ${payload}`);
 });

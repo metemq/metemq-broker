@@ -21,6 +21,7 @@
         "src/auth/pubAuth.ts",
         "src/auth/subAuth.ts",
         "src/auth/userAuth.ts",
+        "src/broker.ts",
         "src/config.ts",
         "src/index.ts",
         "typings/index.d.ts"
