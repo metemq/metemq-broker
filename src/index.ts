@@ -38,8 +38,6 @@ server.on('published', function(packet, client) {
 
     let clientId = client.id;
 
-
-
     console.log(`${clientId}->${topic}: ${payload}`);
 });
 
