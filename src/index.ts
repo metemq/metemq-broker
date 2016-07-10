@@ -1,4 +1,5 @@
 import { Broker } from './broker';
+import { EventHandler } from './event';
 
 import {
     authorizePublish,
@@ -21,10 +22,6 @@ var settings = {
 
 var server = Broker.getInstance(settings);
 
-server.on('clientConnected', function(client) {
-    console.log('client connected', client.id);
-});
-
 // fired when a message is received
 server.on('published', function(packet, client) {
     let topic = packet.topic;
@@ -33,8 +30,12 @@ server.on('published', function(packet, client) {
     // Ignore topic starts with '$'
     // if (topic[0] === '$') return;
 
-    // When server publishes a message, client object is undefined.
-    if (client === undefined) return;
+    // When broker publishes a message, client object is undefined.
+    if (client === undefined) {
+        let topics = topic.split('/');
+        EventHandler.process(payload, topics[2], topics[3]);
+        return;
+    };
 
     let clientId = client.id;
 
@@ -51,5 +52,6 @@ function setup() {
 
     console.log('*** MeteMQ Broker is up and running ***');
 }
+
 
 export { server };

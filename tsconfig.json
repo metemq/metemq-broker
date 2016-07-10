@@ -23,6 +23,12 @@
         "src/auth/userAuth.ts",
         "src/broker.ts",
         "src/config.ts",
+        "src/event.ts",
+        "src/event/connected.ts",
+        "src/event/disconnected.ts",
+        "src/event/handler.ts",
+        "src/event/subscribed.ts",
+        "src/event/unsubscribed.ts",
         "src/index.ts",
         "typings/index.d.ts"
     ],
