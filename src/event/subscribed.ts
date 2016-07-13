@@ -1,15 +1,16 @@
 import { Handler } from './handler';
 
 export class SubscribeEvent extends Handler {
-    public request(payload, event, detail): boolean {
+  
+    public request(payload, event, detail): Promise<boolean> {
         if (event === 'new' && detail === 'subscribes') {
             let obj = JSON.parse(payload);
 
             console.log(`thingId: ${obj.clientId} subscribe to {${obj.topic}}`);
 
-            return true;
+            return Promise.resolve(true);
         } else {
-            return false;
+            return Promise.resolve(false);
         }
     }
 }
