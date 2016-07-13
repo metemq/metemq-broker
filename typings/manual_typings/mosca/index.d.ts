@@ -1,7 +1,7 @@
-declare module "mosca" {
-    import {EventEmitter} from 'events';
+declare module 'mosca' {
+  import { EventEmitter } from 'events';
 
-    class Server extends EventEmitter {
+    export class Server extends EventEmitter {
         constructor(options?);
 
         authenticate: (client, username, password, callback) => void;
@@ -11,10 +11,10 @@ declare module "mosca" {
         publish(packet: MqttPacket, callback?: () => void);
     }
 
-    interface MqttPacket {
+    export interface MqttPacket {
         topic: string;
-        payload: string | Buffer;
-        qos: number;  // 0, 1, or 2
-        retain: boolean;
+        payload?: string | Buffer;
+        qos?: number;  // 0, 1, or 2
+        retain?: boolean;
     }
 }
