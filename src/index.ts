@@ -7,31 +7,15 @@ import {
     authenticate
 } from './auth';
 
-var ascoltatore = {
-    //using ascoltatore
-    type: 'mongo',
-    url: 'mongodb://localhost:27017/mqtt',
-    pubsubCollection: 'ascoltatori',
-    mongo: {}
-};
-
-var settings = {
-    port: 1883,
-    backend: ascoltatore
-};
-
-var server = Broker.getInstance(settings);
+const server = Broker.getInstance();
 
 // fired when a message is received
 server.on('published', function(packet, client) {
     let topic = packet.topic;
     let payload = packet.payload.toString();
 
-    // Ignore topic starts with '$'
-    // if (topic[0] === '$') return;
-
     // When broker publishes a message, client object is undefined.
-    if (client === undefined) {
+    if (client === undefined || client === null) {
         let topics = topic.split('/');
         EventHandler.process(payload, topics[2], topics[3]);
         return;
