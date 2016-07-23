@@ -15,7 +15,7 @@
         "src/**/*.ts",
         "typings/index.d.ts"
     ],
-    "compileOnSave": false,
+    "compileOnSave": true,
     "files": [
         "src/app/auth.ts",
         "src/app/auth/pubAuth.ts",
@@ -30,6 +30,7 @@
         "src/app/event/subscribed.ts",
         "src/app/event/unsubscribed.ts",
         "src/app/index.ts",
+        "src/test/auth/userAuth.test.ts",
         "src/test/test.ts",
         "typings/index.d.ts"
     ],

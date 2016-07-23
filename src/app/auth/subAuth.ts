@@ -1,4 +1,3 @@
-import { server } from '../index';
 import { SERVER_ID } from '../config';
 
 export function authorizeSubscribe(client, topic, callback) {

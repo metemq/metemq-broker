@@ -1,5 +1,5 @@
 import mosca = require('mosca');
-import { MOSCA_DEFAULT_OPTIONS } from './config';
+import { MOSCA_DEFAULT_OPTIONS, SERVER_RESPONSE_TIMEOUT } from './config';
 
 export class Broker {
 
@@ -12,6 +12,36 @@ export class Broker {
     on(event: string, listener: Function): Broker {
         this.mqtt.on(event, listener);
         return this;
+    }
+
+    when(topic: string): Promise<any> {
+        let isResolved = false;
+
+        return new Promise((resolve, reject) => {
+            // Reject if server response time exceeds SERVER_RESPONSE_TIMEOUT
+            setTimeout(() => {
+                if (isResolved) return;
+                reject('Server response timeout');
+                this.mqtt.removeListener('message', listener);
+            }, SERVER_RESPONSE_TIMEOUT);
+            // Set once event listener
+            this.mqtt.once('message', listener);
+            // Listener for topic
+            function listener(incomingTopic, message, packet) {
+                /** TODO: Change to MQTT-Emitter*/
+                if (incomingTopic !== topic) return;
+
+                let payload = message.toString();
+                let parsed = null;
+
+                // Parse payload if it's possible
+                try { parsed = JSON.parse(payload) } catch (e) { }
+                if (parsed) payload = parsed;
+
+                resolve(payload);
+                isResolved = true;
+            }
+        });
     }
 
     publish(topic: string, payload?: string, options?: MqttPacketOptions)
@@ -36,6 +66,10 @@ export class Broker {
         });
     }
 
+    stop() {
+        this.mqtt.close();
+    }
+
     set authenticate(fn: (client, username, password, callback) => void) {
         this.mqtt.authenticate = fn;
     }
@@ -47,8 +81,6 @@ export class Broker {
     set authorizeSubscribe(fn: (client, topic, callback) => void) {
         this.mqtt.authorizeSubscribe = fn;
     }
-
-
 
     private static broker = undefined;
 
