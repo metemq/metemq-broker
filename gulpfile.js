@@ -21,7 +21,7 @@ gulp.task('build', function() {
 
 gulp.task('run', ['build'], function() {
     var stream = nodemon({
-        script: 'dist/', // run ES5 code
+        script: 'build/app', // run code
         ext: 'ts',
         watch: 'src', // watch ES2015 code
         tasks: ['build'] // compile synchronously onChange
@@ -35,11 +35,11 @@ gulp.task('watch', ['build', 'mocha'], function() {
 });
 
 gulp.task('mocha', function() {
-    return gulp.src(['build/test/*.js'], {
+    return gulp.src(['build/test/**/*.js'], {
             read: false
         })
         .pipe(mocha({
-            reporter: 'list'
+            // reporter: 'list'
         }))
         .on('error', gutil.log);
 });

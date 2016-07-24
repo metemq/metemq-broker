@@ -1,5 +1,5 @@
 declare module 'mosca' {
-  import { EventEmitter } from 'events';
+    import { EventEmitter } from 'events';
 
     export class Server extends EventEmitter {
         constructor(options?);
@@ -9,6 +9,7 @@ declare module 'mosca' {
         authorizeSubscribe: (client, topic, callback) => void;
 
         publish(packet: MqttPacket, callback?: () => void);
+        close(): void;
     }
 
     export interface MqttPacket {
