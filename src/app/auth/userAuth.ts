@@ -25,7 +25,8 @@ export async function authenticate(client, username, password: Buffer, callback)
     let error;
     try {
         // Receive $connack message
-        let connack: boolean = await broker.when(`${thingId}/$connack/${msgId}`);
+        let result = await broker.when(`${thingId}/$connack/${msgId}`);
+        let connack: boolean = result.payload;
         if (!connack) error = 'Server refused to connect';
     } catch (e) {
         // SERVER_RESPONSE_TIMEOUT

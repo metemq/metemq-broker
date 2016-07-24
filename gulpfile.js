@@ -39,7 +39,7 @@ gulp.task('mocha', function() {
             read: false
         })
         .pipe(mocha({
-            reporter: 'list'
+            // reporter: 'list'
         }))
         .on('error', gutil.log);
 });

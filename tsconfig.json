@@ -13,7 +13,7 @@
     ],
     "filesGlob": [
         "src/**/*.ts",
-        "typings/index.d.ts"
+        "typings/**/*.d.ts"
     ],
     "compileOnSave": true,
     "files": [
@@ -31,8 +31,14 @@
         "src/app/event/unsubscribed.ts",
         "src/app/index.ts",
         "src/test/auth/userAuth.test.ts",
-        "src/test/test.ts",
-        "typings/index.d.ts"
+        "typings/globals/chai/index.d.ts",
+        "typings/globals/mocha/index.d.ts",
+        "typings/globals/mqtt/index.d.ts",
+        "typings/globals/node/index.d.ts",
+        "typings/index.d.ts",
+        "typings/manual_typings/mosca/index.d.ts",
+        "typings/manual_typings/mqtt-emitter/index.d.ts",
+        "typings/manual_typings/shortid/index.d.ts"
     ],
     "atom": {
         "rewriteTsconfig": true
