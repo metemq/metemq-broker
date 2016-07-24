@@ -4,18 +4,23 @@ import { Broker } from '../broker';
 
 let broker = Broker.getInstance();
 
-export async function authenticate(client, username, password, callback) {
+export async function authenticate(client, username, password: Buffer, callback) {
     const clientId = client.id;
 
     // Server authentication
-    if (clientId === SERVER_ID) return callback(null, true);
+    if (clientId === SERVER_ID)
+        return serverAuth(username, password, callback);
 
     // Client ID is thingId if the client is not server
     const thingId = clientId;
     // Generate unique ID
     const msgId = shortid.generate();
     // Send $connect message to server
-    await broker.publish(`${thingId}/$connect/${msgId}`);
+    const payload = {
+        userId: username,
+        password: password ? password.toString() : password
+    }
+    await broker.publish(`${thingId}/$connect/${msgId}`, payload);
 
     let error;
     try {
@@ -29,4 +34,8 @@ export async function authenticate(client, username, password, callback) {
     // Authenticate the thing
     if (error) callback(error, false);
     else callback(null, true);
+}
+
+function serverAuth(username, password, callback) {
+    callback(null, true);
 }
