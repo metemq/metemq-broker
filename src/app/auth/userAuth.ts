@@ -17,7 +17,7 @@ export async function authenticate(client, username, password: Buffer, callback)
     const msgId = shortid.generate();
     // Send $connect message to server
     const payload = {
-        userId: username,
+        username: username,
         password: password ? password.toString() : password
     }
     await broker.publish(`${thingId}/$connect/${msgId}`, payload);

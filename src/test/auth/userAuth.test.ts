@@ -58,7 +58,7 @@ describe('function userAuth', function() {
             const parsed = JSON.parse(payload);
             assert.equal(levels[0], 'myThing02');
             assert.equal(levels[1], '$connect');
-            assert.equal(parsed.userId, 'user01');
+            assert.equal(parsed.username, 'user01');
             assert.equal(parsed.password, 'secret');
             server.publish(`${levels[0]}/$connack/${levels[2]}`, 'true');
         });
