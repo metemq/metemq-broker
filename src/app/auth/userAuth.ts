@@ -11,6 +11,8 @@ export async function authenticate(client, username, password: Buffer, callback)
     if (clientId === SERVER_ID)
         return serverAuth(username, password, callback);
 
+    // Deny if there is no password but username
+    if (username && !password) return callback('No password error', false);
     // Client ID is thingId if the client is not server
     const thingId = clientId;
     // Generate unique ID
