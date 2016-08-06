@@ -1,23 +1,32 @@
 import * as mqtt from 'mqtt';
 import { assert } from 'chai';
-
 import '../../app/index';
 import { Broker } from '../../app/broker';
 
-const broker = Broker.getInstance();
+describe('Thing Authentication', function() {
 
-describe('function userAuth', function() {
-
+    let broker: Broker;
     let server: mqtt.Client;
     let thing: mqtt.Client;
 
     before(function(done) {
+        broker = new Broker();
+        broker.on('ready', function() {
+            console.log('Broker is up and running');
+            done();
+        });
+        broker.on('published', function(packet) {
+            console.log(`[${packet.topic}]->${packet.payload.toString()}`);
+        });
+    });
+
+    before(function(done) {
         server = mqtt.connect('mqtt://localhost', { clientId: '$SERVER' });
         server.once('connect', () => server.subscribe('#', () => done()));
-        server.on('message', (topic, message) => {
-            const payload = message.toString();
-            console.log(`[${topic}]->${payload}`);
-        })
+        // server.on('message', (topic, message) => {
+        //     const payload = message.toString();
+        //     console.log(`[${topic}]->${payload}`);
+        // });
     });
 
     after(function() {

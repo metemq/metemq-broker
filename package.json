@@ -6,6 +6,7 @@
   "scripts": {
     "pretest": "tsc",
     "test": "mocha build/test",
+    "prepublish": "tsc",
     "prestart": "tsc",
     "start": "node ."
   },
@@ -16,7 +17,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "mosca": "^2.0.1",
+    "mosca": "^2.0.2",
     "mqtt-emitter": "^1.2.4",
     "shortid": "^2.2.6"
   },

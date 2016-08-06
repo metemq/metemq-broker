@@ -2,9 +2,15 @@ import { ConnectHandler } from './event/connected';
 import { DisconnectHandler } from './event/disconnected';
 import { SubscribeEvent } from './event/subscribed';
 import { UnsubscribeEvent } from './event/unsubscribed';
+import { BrokerEventHandler } from './event/handler';
+import { Broker } from './broker';
 
-export const EventHandler = new ConnectHandler();
+export function createEventHandler(broker: Broker): BrokerEventHandler {
+    let eventHandler = new ConnectHandler(broker);
 
-EventHandler.setNext(new DisconnectHandler());
-EventHandler.setNext(new SubscribeEvent());
-EventHandler.setNext(new UnsubscribeEvent());
+    eventHandler.setNext(new DisconnectHandler(broker));
+    eventHandler.setNext(new SubscribeEvent(broker));
+    eventHandler.setNext(new UnsubscribeEvent(broker));
+
+    return eventHandler;
+}
