@@ -72,4 +72,13 @@ describe('Thing Authentication', function() {
             server.publish(`${levels[0]}/$connack/${levels[2]}`, 'true');
         });
     });
+
+    it('should deny connection if there is username but no password', function(done) {
+        thing = mqtt.connect('mqtt://localhost', {
+            clientId: 'myThing03',
+            username: 'user03'
+        });
+
+        thing.on('error', () => done());
+    });
 });
