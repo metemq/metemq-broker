@@ -1,7 +1,7 @@
 {
   "name": "metemq-broker",
   "version": "0.0.0",
-  "description": "",
+  "description": "Broker of MeteMQ",
   "main": "build/app/index.js",
   "scripts": {
     "pretest": "tsc",
@@ -14,7 +14,6 @@
     "type": "git",
     "url": "git@gitlab.com:metemq/metemq-broker.git"
   },
-  "author": "",
   "license": "MIT",
   "dependencies": {
     "mosca": "^2.0.2",
