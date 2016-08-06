@@ -98,7 +98,7 @@ export class Broker {
         });
     }
 
-    stop() {
+    close() {
         this.mqtt.close();
     }
 

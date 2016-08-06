@@ -32,7 +32,7 @@ describe('Thing Authentication', function() {
     after(function() {
         thing.end();
         server.end();
-        broker.stop();
+        broker.close();
     });
 
     it('should send $connect message to server', function(done) {
