@@ -30,11 +30,11 @@ gulp.task('run', ['build'], function() {
     return stream;
 });
 
-gulp.task('watch', ['build', 'mocha'], function() {
-    gulp.watch(['src/**'], ['build', 'mocha']);
+gulp.task('watch', ['build', 'test'], function() {
+    gulp.watch(['src/**', 'test/**'], ['build', 'test']);
 });
 
-gulp.task('mocha', function() {
+gulp.task('test', ['build'], function() {
     return gulp.src(['build/test/**/*.js'], {
             read: false
         })

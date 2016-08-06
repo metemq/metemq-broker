@@ -1,17 +1,14 @@
-import { Handler } from './handler';
-import { Broker } from '../broker';
+import { BrokerEventHandler } from './handler';
 
-let broker = Broker.getInstance();
-
-export class DisconnectHandler extends Handler {
+export class DisconnectHandler extends BrokerEventHandler {
 
     public async request(payload, event, detail): Promise<boolean> {
         if (event === 'disconnect') {
             const thingId = payload;
 
-            console.log(`thingId: ${thingId} is disconnected!`);
+            // console.log(`thingId: ${thingId} is disconnected!`);
 
-            await broker.publish(`${thingId}/$disconnect`);
+            await this.broker.publish(`${thingId}/$disconnect`);
 
             return true;
         } else {

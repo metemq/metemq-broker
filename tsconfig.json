@@ -3,10 +3,11 @@
         "module": "commonjs",
         "target": "es6",
         "noImplicitAny": false,
-        "sourceMap": false,
+        "sourceMap": true,
         "outDir": "./build",
         "rootDir": "./src",
-        "moduleResolution": "node"
+        "moduleResolution": "node",
+        "declaration": true
     },
     "exclude": [
         "node_modules"
@@ -17,10 +18,6 @@
     ],
     "compileOnSave": true,
     "files": [
-        "src/app/auth.ts",
-        "src/app/auth/pubAuth.ts",
-        "src/app/auth/subAuth.ts",
-        "src/app/auth/userAuth.ts",
         "src/app/broker.ts",
         "src/app/config.ts",
         "src/app/event.ts",
@@ -30,7 +27,7 @@
         "src/app/event/subscribed.ts",
         "src/app/event/unsubscribed.ts",
         "src/app/index.ts",
-        "src/test/auth/userAuth.test.ts",
+        "src/test/auth/thingAuth.test.ts",
         "typings/globals/chai/index.d.ts",
         "typings/globals/mocha/index.d.ts",
         "typings/globals/mqtt/index.d.ts",

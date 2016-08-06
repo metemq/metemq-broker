@@ -1,14 +1,22 @@
 import mosca = require('mosca');
+import shortid = require('shortid');
 import MqttEmitter = require('mqtt-emitter');
 import { MOSCA_DEFAULT_OPTIONS, SERVER_RESPONSE_TIMEOUT } from './config';
+import { createEventHandler } from './event';
+import { SERVER_ID } from './config';
 
 export class Broker {
 
-    private mqtt: mosca.Server = undefined;
+    private mqtt: mosca.Server;
     private emitter = new MqttEmitter();
+    private handler = createEventHandler(this);
 
-    constructor() {
-        this.mqtt = new mosca.Server(MOSCA_DEFAULT_OPTIONS);
+    constructor(options?) {
+        // Use default options if there is no user-defined options
+        if (options == undefined)
+            options = MOSCA_DEFAULT_OPTIONS;
+        // Create Mosca server object with options
+        this.mqtt = new mosca.Server(options);
         // Set emitter
         this.mqtt.on('published', (packet, client) => {
             let topic = packet.topic;
@@ -21,6 +29,29 @@ export class Broker {
 
             this.emitter.emit(topic, payload);
         });
+
+        // Setup $SYS topic handler
+        this.mqtt.on('published', (packet, client) => {
+            let topic = packet.topic;
+            let payload = packet.payload.toString();
+
+            // When broker publishes a message, client object is undefined.
+            if (client === undefined || client === null) {
+                let topics = topic.split('/');
+                this.handler.process(payload, topics[2], topics[3]);
+                return;
+            };
+        });
+
+        // Should wray functions in order to apply functions in context of 'this' broker
+        this.mqtt.authenticate = (client, username, password, callback) =>
+            this.thingAuth(client, username, password, callback);
+
+        this.mqtt.authorizePublish = (client, topic, payload, callback) =>
+            this.pubAuth(client, topic, payload, callback);
+
+        this.mqtt.authorizeSubscribe = (client, topic, callback) =>
+            this.subAuth(client, topic, callback);
     }
 
     on(event: string, listener: Function): Broker {
@@ -71,26 +102,79 @@ export class Broker {
         this.mqtt.close();
     }
 
-    set authenticate(fn: (client, username, password, callback) => void) {
-        this.mqtt.authenticate = fn;
+    private async thingAuth(client, username, password: Buffer, callback) {
+        const clientId = client.id;
+
+        // Server authentication
+        if (clientId === SERVER_ID)
+            return this.serverAuth(username, password, callback);
+
+        // Deny if there is no password but username
+        if (username && !password) return callback('No password error', false);
+        // Client ID is thingId if the client is not server
+        const thingId = clientId;
+        // Generate unique ID
+        const msgId = shortid.generate();
+        // Send $connect message to server
+        const payload = {
+            username: username,
+            password: password ? password.toString() : password
+        }
+        await this.publish(`${thingId}/$connect/${msgId}`, payload);
+
+        let error;
+        try {
+            // Receive $connack message
+            let result = await this.when(`${thingId}/$connack/${msgId}`);
+            let connack: boolean = result.payload;
+            if (!connack) error = 'Server refused to connect';
+        } catch (e) {
+            // SERVER_RESPONSE_TIMEOUT
+            error = e;
+        }
+        // Authenticate the thing
+        if (error) callback(error, false);
+        else callback(null, true);
     }
 
-    set authorizePublish(fn: (client, topic, payload, callback) => void) {
-        this.mqtt.authorizePublish = fn;
+    private serverAuth(username, password, callback) {
+        callback(null, true);
     }
 
-    set authorizeSubscribe(fn: (client, topic, callback) => void) {
-        this.mqtt.authorizeSubscribe = fn;
+    private pubAuth(client, topic, payload, callback) {
+        let levels = topic.split('/');
+        let thingId = levels[0];
+        let clientId = client.id;
+
+        // Allow every publication for server
+        if (clientId === SERVER_ID)
+            return callback(null, true);
+
+        // Thing can only publish topics begin with their IDs
+        if (clientId !== thingId)
+            return callback('You can only publish topics begin with your ID', false);
+
+        // Allow things to publish topics begin with their IDs
+        if (clientId === thingId)
+            return callback(null, true);
+
+        // Reject any other cases
+        callback(null, false);
     }
 
-    private static broker = undefined;
+    private subAuth(client, topic, callback) {
+        let clientId = client.id;
+        console.log(`subAuth ${clientId}`)
+        if (clientId === SERVER_ID)
+            return callback(null, true);
 
-    public static getInstance(): Broker {
-        if (this.broker === undefined)
-            this.broker = new Broker();
+        const topics = topic.split('/');
+        const thingId = topics[0];
 
-        return this.broker;
+        if (clientId === thingId) callback(null, true);
+        else callback(`Miss match id`, false);
     }
+
 }
 
 export interface MqttPacketOptions {
