@@ -21,7 +21,7 @@ describe('Thing Authentication', function() {
     });
 
     before(function(done) {
-        server = mqtt.connect('mqtt://localhost', { clientId: '$SERVER' });
+        server = mqtt.connect('mqtt://localhost', { clientId: '$SERVER', username: 'localhost', password: 'localhost' });
         server.once('connect', () => server.subscribe('#', () => done()));
         // server.on('message', (topic, message) => {
         //     const payload = message.toString();

@@ -1,15 +1,18 @@
 import mosca = require('mosca');
 import shortid = require('shortid');
 import MqttEmitter = require('mqtt-emitter');
+import crypto = require('crypto-js');
 import { MOSCA_DEFAULT_OPTIONS, SERVER_RESPONSE_TIMEOUT } from './config';
 import { createEventHandler } from './event';
 import { SERVER_ID } from './config';
+import { mongo } from './mongo';
 
 export class Broker {
 
     private mqtt: mosca.Server;
     private emitter = new MqttEmitter();
     private handler = createEventHandler(this);
+    private mongoUrl = "mongodb://localhost:27017/servers";
 
     constructor(options?) {
         // Use default options if there is no user-defined options
@@ -106,8 +109,14 @@ export class Broker {
         const clientId = client.id;
 
         // Server authentication
-        if (clientId === SERVER_ID)
-            return this.serverAuth(username, password, callback);
+        if (clientId === SERVER_ID) {
+            if (username === undefined || password === undefined) {
+                callback(null, false);
+            }
+
+            return this.serverAuth(username, password.toString(), callback);
+        }
+
 
         // Deny if there is no password but username
         if (username && !password) return callback('No password error', false);
@@ -138,7 +147,25 @@ export class Broker {
     }
 
     private serverAuth(username, password, callback) {
-        callback(null, true);
+        let passwordCrypted = crypto.SHA256(password).toString();
+
+        mongo.connect(this.mongoUrl, function(err, db) {
+            let serverList = db.collection('list');
+
+            serverList.find({ username: username }).toArray(function(err, docs) {
+                if (docs.length === 0) {
+                    callback('Dont exist server', false);
+                }
+
+                if (docs[0].password === passwordCrypted) {
+                    callback(null, true);
+                } else {
+                    callback('Password mismatch', false);
+                }
+            });
+
+            db.close();
+        });
     }
 
     private pubAuth(client, topic, payload, callback) {
