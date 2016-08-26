@@ -147,14 +147,18 @@ export class Broker {
     }
 
     private serverAuth(username, password, callback) {
+        //Encrypt password by SHA256 method
         let passwordCrypted = crypto.SHA256(password).toString();
 
+        //The input account compared to stored accounts
         mongo.connect(this.mongoUrl, function(err, db) {
             let serverList = db.collection('list');
 
             serverList.find({ username: username }).toArray(function(err, docs) {
+                db.close();
+
                 if (docs.length === 0) {
-                    callback('Dont exist server', false);
+                    callback('Not exist server', false);
                 }
 
                 if (docs[0].password === passwordCrypted) {
@@ -163,8 +167,6 @@ export class Broker {
                     callback('Password mismatch', false);
                 }
             });
-
-            db.close();
         });
     }
 

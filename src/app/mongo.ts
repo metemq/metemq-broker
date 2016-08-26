@@ -1,1 +1,1 @@
-export var mongo = require('mongodb').MongoClient;
+export const mongo = require('mongodb').MongoClient;

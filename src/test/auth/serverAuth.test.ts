@@ -1,8 +1,5 @@
 import * as mqtt from 'mqtt';
-import { assert } from 'chai';
-import '../../app/index';
 import { Broker } from '../../app/broker';
-import crypto = require("crypto-js");
 
 describe('Server Authentication', function() {
 
