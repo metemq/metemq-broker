@@ -1,11 +1,11 @@
 {
   "name": "metemq-broker",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Broker of MeteMQ",
   "main": "build/app/index.js",
   "scripts": {
     "pretest": "tsc",
-    "test": "mocha build/test",
+    "test": "mocha build/test/**/*.js",
     "prepublish": "tsc",
     "prestart": "tsc",
     "start": "node ."
