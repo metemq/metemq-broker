@@ -164,7 +164,7 @@ export class Broker {
 
     private subAuth(client, topic, callback) {
         let clientId = client.id;
-        console.log(`subAuth ${clientId}`)
+
         if (clientId === SERVER_ID)
             return callback(null, true);
 
